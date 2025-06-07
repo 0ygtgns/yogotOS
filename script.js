@@ -6,22 +6,29 @@ class WindowManager {
         this.activeWindow = null;
         this.highestZIndex = 100;
         this.openWindows = new Map(); // appId -> windowId
+        this.fileSystem = {};
 
         // UI Elements
+        this.lockScreen = document.getElementById('lock-screen');
+        this.loginForm = document.getElementById('login-form');
+        this.passwordInput = document.getElementById('password-input');
+        this.mainEnvironment = document.getElementById('main-environment');
         this.desktopIconsContainer = document.getElementById('desktop-icons-container');
+        this.notificationContainer = document.getElementById('notification-container');
         this.startButton = document.getElementById('start-button');
         this.startMenu = document.getElementById('start-menu');
         this.startMenuApps = document.getElementById('start-menu-apps');
         this.desktopContextMenu = document.getElementById('context-menu-desktop');
         this.iconContextMenu = document.getElementById('context-menu-icon');
+        this.lockButton = document.getElementById('lock-button');
         
         // Application registry
         this.appRegistry = {
             'notepad': { title: 'Notepad', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>', content: '<textarea class="app-content" placeholder="Start typing..."></textarea>', isDeletable: false },
             'terminal': { title: 'Terminal', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>', content: '<div class="app-content font-mono text-green-400"><div>User@WebOS:~$ <span class="cursor-blink">|</span></div></div>', isDeletable: false },
-            'settings': { title: 'Settings', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>', content: `<div class="app-content settings-app"><h3 class="settings-title">Appearance</h3><div class="setting-item"><label for="wallpaper-input">Desktop Wallpaper URL:</label><div class="input-group"><input type="text" id="wallpaper-input" class="settings-input" placeholder="Enter image URL..."><button id="wallpaper-button" class="settings-button">Apply</button></div></div></div>`, isDeletable: false },
+            'settings': { title: 'Settings', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>', content: `<div class="app-content settings-app"><h3 class="settings-title">Appearance</h3><div class="setting-item"><label for="wallpaper-input">Desktop Wallpaper URL:</label><div class="input-group"><input type="text" id="wallpaper-input" class="settings-input" placeholder="Enter image URL..."><button id="wallpaper-button" class="settings-button">Apply</button></div></div><h3 class="settings-title">System</h3><div class="setting-item"><button id="notification-button" class="settings-button">Show Test Notification</button></div></div>`, isDeletable: false },
             'calculator': { title: 'Calculator', icon: '<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm3-6h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm3-6h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h3.375c.621 0 1.125.504 1.125 1.125v3.375c0 .621-.504 1.125-1.125 1.125h-3.375a1.125 1.125 0 0 1-1.125-1.125v-3.375Z" /></svg>', content: `<div class="app-content calculator"><div class="calc-display">0</div><div class="calc-buttons"><button>C</button><button>(</button><button>)</button><button>/</button><button>7</button><button>8</button><button>9</button><button>*</button><button>4</button><button>5</button><button>6</button><button>-</button><button>1</button><button>2</button><button>3</button><button>+</button><button>0</button><button>.</button><button>DEL</button><button>=</button></div></div>`, isDeletable: false },
-            'file-explorer': { title: 'File Explorer', icon: '<i class="ri-folder-line"></i>', content: `<div class="app-content file-explorer-app"><div class="file-item"><i class="ri-folder-music-2-line"></i><span>Music</span></div><div class="file-item"><i class="ri-image-line"></i><span>Pictures</span></div><div class="file-item"><i class="ri-vidicon-line"></i><span>Videos</span></div><div class="file-item"><i class="ri-file-text-line"></i><span>document.txt</span></div></div>`, isDeletable: false },
+            'file-explorer': { title: 'File Explorer', icon: '<i class="ri-folder-line"></i>', content: `<div class="app-content file-explorer-app"></div>`, isDeletable: false },
             'folder': { title: 'New Folder', icon: '<i class="ri-folder-fill"></i>', isApp: false, isDeletable: true, isRenamable: true }
         };
 
@@ -29,20 +36,55 @@ class WindowManager {
     }
 
     init() {
+        this.initLogin();
+    }
+
+    initLogin() {
+        this.loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (this.passwordInput.value === 'password') {
+                this.unlockSystem();
+            } else {
+                const loginBox = this.loginForm.parentElement;
+                loginBox.classList.add('error');
+                this.passwordInput.value = '';
+                setTimeout(() => loginBox.classList.remove('error'), 500);
+            }
+        });
+    }
+    
+    unlockSystem() {
+        this.lockScreen.classList.add('hidden');
+        this.mainEnvironment.classList.remove('hidden');
+        if (!this.desktopInitialized) {
+            this.initializeDesktop();
+            this.desktopInitialized = true;
+        }
+    }
+    
+    lockSystem() {
+        this.passwordInput.value = '';
+        this.lockScreen.classList.remove('hidden');
+        this.mainEnvironment.classList.add('hidden');
+    }
+
+    initializeDesktop() {
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
         this.initStartMenu();
         this.initContextMenu();
-        this.loadDesktop();
+        this.initFileSystem();
         this.loadWallpaper();
         this.loadWindowState();
+        this.showNotification('Welcome back, Guest User!', 'info');
         window.addEventListener('beforeunload', () => {
             this.saveWindowState();
-            this.saveDesktopState();
+            this.saveFileSystem();
         });
     }
 
     initStartMenu() {
+        this.startMenuApps.innerHTML = '';
         for (const appId in this.appRegistry) {
             const app = this.appRegistry[appId];
             if (app.isApp !== false) {
@@ -54,6 +96,7 @@ class WindowManager {
             }
         }
         this.startButton.addEventListener('click', (e) => { e.stopPropagation(); this.toggleStartMenu(); });
+        this.lockButton.addEventListener('click', () => this.lockSystem());
     }
 
     initContextMenu() {
@@ -100,9 +143,8 @@ class WindowManager {
         const appId = icon.dataset.appId;
         const appConfig = this.appRegistry[appId];
         
-        // Enable/disable delete option
-        const deleteOption = this.iconContextMenu.querySelector('[data-action="delete"]');
-        deleteOption.classList.toggle('disabled', !appConfig.isDeletable);
+        this.iconContextMenu.querySelector('[data-action="delete"]').classList.toggle('disabled', !appConfig.isDeletable);
+        this.iconContextMenu.querySelector('[data-action="rename"]').classList.toggle('disabled', !appConfig.isRenamable);
 
         this.iconContextMenu.onclick = (e) => {
             const action = e.target.closest('.context-menu-item')?.dataset.action;
@@ -126,15 +168,16 @@ class WindowManager {
         switch(action) {
             case 'open':
                 if(this.appRegistry[appId].isApp !== false) this.createWindow(appId);
-                else this.createWindow('file-explorer'); // Open folders in file explorer
+                else this.createWindow('file-explorer');
                 break;
             case 'rename':
                 this.renameIcon(icon);
                 break;
             case 'delete':
                 if (this.appRegistry[appId].isDeletable) {
+                    delete this.fileSystem.desktop[icon.id];
                     icon.remove();
-                    this.saveDesktopState();
+                    this.saveFileSystem();
                 }
                 break;
         }
@@ -144,28 +187,20 @@ class WindowManager {
         const span = icon.querySelector('span');
         const currentName = span.textContent;
         const input = document.createElement('input');
-        input.type = 'text';
-        input.value = currentName;
-        input.className = 'icon-title-input';
-        
+        input.type = 'text'; input.value = currentName; input.className = 'icon-title-input';
         icon.replaceChild(input, span);
-        input.focus();
-        input.select();
-        
+        input.focus(); input.select();
         const finishRename = () => {
             const newName = input.value.trim() || currentName;
             span.textContent = newName;
+            this.fileSystem.desktop[icon.id].title = newName;
             icon.replaceChild(span, input);
-            this.saveDesktopState();
+            this.saveFileSystem();
         };
-
         input.addEventListener('blur', finishRename);
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') input.blur();
-            if (e.key === 'Escape') {
-                input.value = currentName;
-                input.blur();
-            }
+            if (e.key === 'Escape') { input.value = currentName; input.blur(); }
         });
     }
 
@@ -181,9 +216,27 @@ class WindowManager {
     updateClock() {
         const clockEl = document.getElementById('clock');
         if (clockEl) {
-            const now = new Date();
-            clockEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            clockEl.textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
         }
+    }
+    
+    showNotification(message, type = 'info') {
+        const iconMap = {
+            info: 'ri-information-line',
+            success: 'ri-checkbox-circle-line',
+            error: 'ri-error-warning-line',
+        };
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerHTML = `
+            <i class="icon ${iconMap[type]}"></i>
+            <span>${message}</span>
+        `;
+        this.notificationContainer.appendChild(notification);
+        setTimeout(() => {
+            notification.classList.add('fade-out');
+            notification.addEventListener('animationend', () => notification.remove());
+        }, 4000);
     }
 
     createWindow(appId, state = {}) {
@@ -225,6 +278,8 @@ class WindowManager {
 
         if (appId === 'calculator') this.attachCalculatorLogic(windowEl);
         if (appId === 'settings') this.attachSettingsLogic(windowEl);
+        if (appId === 'file-explorer') this.attachFileExplorerLogic(windowEl);
+
 
         this.updateTaskbar();
         if (!state.minimized) this.focusWindow(windowId);
@@ -356,29 +411,62 @@ class WindowManager {
 
     attachSettingsLogic(el) {
         const i=el.querySelector('#wallpaper-input'), b=el.querySelector('#wallpaper-button');
+        const notifBtn = el.querySelector('#notification-button');
         i.value = localStorage.getItem('desktopWallpaper') || '';
         b.addEventListener('click', () => { this.changeWallpaper(i.value); });
+        notifBtn.addEventListener('click', () => this.showNotification('This is a test notification!', 'info'));
+    }
+
+    attachFileExplorerLogic(windowEl) {
+        const container = windowEl.querySelector('.file-explorer-app');
+        container.innerHTML = '';
+        const desktopItems = this.fileSystem.desktop || {};
+        for (const id in desktopItems) {
+            const itemData = desktopItems[id];
+            const appConfig = this.appRegistry[itemData.appId];
+            const itemEl = document.createElement('div');
+            itemEl.className = 'file-item';
+            itemEl.innerHTML = `${appConfig.icon}<span>${itemData.title}</span>`;
+            itemEl.addEventListener('dblclick', () => {
+                this.createWindow(itemData.appId);
+            });
+            container.appendChild(itemEl);
+        }
     }
     
     changeWallpaper(url) { if (url) { this.desktop.style.backgroundImage = `url('${url}')`; localStorage.setItem('desktopWallpaper', url); } }
     loadWallpaper() { const url = localStorage.getItem('desktopWallpaper'); if (url) this.desktop.style.backgroundImage = `url('${url}')`; }
 
-    // Desktop Icon Management
+    // File System and Desktop Icon Management
+    initFileSystem() {
+        const savedFS = localStorage.getItem('fileSystem');
+        if (savedFS) {
+            this.fileSystem = JSON.parse(savedFS);
+        } else {
+            this.fileSystem = {
+                'desktop': {
+                    'icon-notepad': { appId: 'notepad', title: 'Notepad', top: 32, left: 32 },
+                    'icon-terminal': { appId: 'terminal', title: 'Terminal', top: 128, left: 32 },
+                    'icon-settings': { appId: 'settings', title: 'Settings', top: 224, left: 32 },
+                    'icon-calculator': { appId: 'calculator', title: 'Calculator', top: 320, left: 32 },
+                    'icon-file-explorer': { appId: 'file-explorer', title: 'File Explorer', top: 416, left: 32 }
+                }
+            };
+        }
+        this.loadDesktop();
+    }
+
     loadDesktop() {
         this.desktopIconsContainer.innerHTML = '';
-        const icons = JSON.parse(localStorage.getItem('desktopIcons')) || [
-            { id: 'icon-notepad', appId: 'notepad', top: 32, left: 32 }, { id: 'icon-terminal', appId: 'terminal', top: 128, left: 32 },
-            { id: 'icon-settings', appId: 'settings', top: 224, left: 32 }, { id: 'icon-calculator', appId: 'calculator', top: 320, left: 32 },
-            { id: 'icon-file-explorer', appId: 'file-explorer', top: 416, left: 32 }
-        ];
-        icons.forEach(icon => this.createNewDesktopIcon(icon.appId, { x: icon.left, y: icon.top }, icon.id, icon.title));
-        if (!localStorage.getItem('desktopIcons')) this.saveDesktopState();
+        const desktopItems = this.fileSystem.desktop || {};
+        for (const id in desktopItems) {
+            const item = desktopItems[id];
+            this.createNewDesktopIcon(item.appId, { x: item.left, y: item.top }, id, item.title);
+        }
     }
     
     createNewDesktopIcon(appId, pos, id, title) {
         const iconId = id || `icon-${Date.now()}`;
-        if (document.getElementById(iconId)) return;
-
         const appConfig = this.appRegistry[appId];
         const iconEl = document.createElement('div');
         iconEl.className = 'desktop-icon'; iconEl.id = iconId; iconEl.dataset.appId = appId;
@@ -392,6 +480,11 @@ class WindowManager {
         
         this.desktopIconsContainer.appendChild(iconEl);
         this.makeIconDraggable(iconEl);
+
+        if (!id) {
+            this.fileSystem.desktop[iconId] = { appId, title: iconTitle, top: pos.y, left: pos.x };
+            this.saveFileSystem();
+        }
         return iconEl;
     }
 
@@ -410,22 +503,16 @@ class WindowManager {
         const stop = () => {
             element.classList.remove('dragging');
             document.onmouseup=null; document.onmousemove=null;
-            this.saveDesktopState();
+            this.fileSystem.desktop[element.id].left = parseInt(element.style.left);
+            this.fileSystem.desktop[element.id].top = parseInt(element.style.top);
+            this.saveFileSystem();
         };
         element.onmousedown = drag;
     }
 
     // State Persistence
-    saveDesktopState() {
-        const icons = [];
-        document.querySelectorAll('.desktop-icon').forEach(icon => {
-            icons.push({
-                id: icon.id, appId: icon.dataset.appId,
-                left: parseInt(icon.style.left), top: parseInt(icon.style.top),
-                title: icon.querySelector('span').textContent
-            });
-        });
-        localStorage.setItem('desktopIcons', JSON.stringify(icons));
+    saveFileSystem() {
+        localStorage.setItem('fileSystem', JSON.stringify(this.fileSystem));
     }
 
     saveWindowState() {
