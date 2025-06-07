@@ -21,14 +21,15 @@ class WindowManager {
         this.desktopContextMenu = document.getElementById('context-menu-desktop');
         this.iconContextMenu = document.getElementById('context-menu-icon');
         this.lockButton = document.getElementById('lock-button');
+        this.taskbarEl = document.querySelector('.taskbar');
         
         // Application registry
         this.appRegistry = {
-            'notepad': { title: 'Notepad', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>', content: '<textarea class="app-content" placeholder="Start typing..."></textarea>', isDeletable: false },
-            'terminal': { title: 'Terminal', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>', content: '<div class="app-content font-mono text-green-400"><div>User@WebOS:~$ <span class="cursor-blink">|</span></div></div>', isDeletable: false },
-            'settings': { title: 'Settings', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>', content: `<div class="app-content settings-app"><h3 class="settings-title">Appearance</h3><div class="setting-item"><label for="wallpaper-input">Desktop Wallpaper URL:</label><div class="input-group"><input type="text" id="wallpaper-input" class="settings-input" placeholder="Enter image URL..."><button id="wallpaper-button" class="settings-button">Apply</button></div></div><h3 class="settings-title">System</h3><div class="setting-item"><button id="notification-button" class="settings-button">Show Test Notification</button></div></div>`, isDeletable: false },
-            'calculator': { title: 'Calculator', icon: '<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm3-6h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm3-6h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h3.375c.621 0 1.125.504 1.125 1.125v3.375c0 .621-.504 1.125-1.125 1.125h-3.375a1.125 1.125 0 0 1-1.125-1.125v-3.375Z" /></svg>', content: `<div class="app-content calculator"><div class="calc-display">0</div><div class="calc-buttons"><button>C</button><button>(</button><button>)</button><button>/</button><button>7</button><button>8</button><button>9</button><button>*</button><button>4</button><button>5</button><button>6</button><button>-</button><button>1</button><button>2</button><button>3</button><button>+</button><button>0</button><button>.</button><button>DEL</button><button>=</button></div></div>`, isDeletable: false },
-            'file-explorer': { title: 'File Explorer', icon: '<i class="ri-folder-line"></i>', content: `<div class="app-content file-explorer-app"></div>`, isDeletable: false },
+            'notepad': { title: 'Notepad', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>', content: '<textarea class="app-content" placeholder="Start typing..."></textarea>', isDeletable: false, isRenamable: false, saveId: 'notepad-content' },
+            'terminal': { title: 'Terminal', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>', content: '<div class="app-content font-mono text-green-400"><div>User@WebOS:~$ <span class="cursor-blink">|</span></div></div>', isDeletable: false, isRenamable: false },
+            'settings': { title: 'Settings', icon: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>', content: `<div class="app-content settings-app"><h3 class="settings-title">Appearance</h3><div class="setting-item"><label>Theme</label><div class="theme-switcher"><button data-theme="dark">Dark</button><button data-theme="light">Light</button></div></div><div class="setting-item"><label for="wallpaper-input">Desktop Wallpaper URL:</label><div class="input-group"><input type="text" id="wallpaper-input" class="settings-input" placeholder="Enter image URL..."><button id="wallpaper-button" class="settings-button">Apply</button></div></div><h3 class="settings-title">System</h3><div class="setting-item"><button id="notification-button" class="settings-button">Show Test Notification</button></div><div class="setting-item"><button id="clear-data-button" class="settings-button danger">Reset All Data</button></div></div>`, isDeletable: false, isRenamable: false },
+            'calculator': { title: 'Calculator', icon: '<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm3-6h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm3-6h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h3.375c.621 0 1.125.504 1.125 1.125v3.375c0 .621-.504 1.125-1.125 1.125h-3.375a1.125 1.125 0 0 1-1.125-1.125v-3.375Z" /></svg>', content: `<div class="app-content calculator"><div class="calc-display">0</div><div class="calc-buttons"><button>C</button><button>(</button><button>)</button><button>/</button><button>7</button><button>8</button><button>9</button><button>*</button><button>4</button><button>5</button><button>6</button><button>-</button><button>1</button><button>2</button><button>3</button><button>+</button><button>0</button><button>.</button><button>DEL</button><button>=</button></div></div>`, isDeletable: false, isRenamable: false },
+            'file-explorer': { title: 'File Explorer', icon: '<i class="ri-folder-line"></i>', content: `<div class="app-content file-explorer-app"></div>`, isDeletable: false, isRenamable: false },
             'folder': { title: 'New Folder', icon: '<i class="ri-folder-fill"></i>', isApp: false, isDeletable: true, isRenamable: true }
         };
 
@@ -69,10 +70,12 @@ class WindowManager {
     }
 
     initializeDesktop() {
+        this.loadTheme();
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
         this.initStartMenu();
         this.initContextMenu();
+        this.initDesktopInteraction();
         this.initFileSystem();
         this.loadWallpaper();
         this.loadWindowState();
@@ -116,7 +119,77 @@ class WindowManager {
             if (!this.startMenu.contains(e.target) && !this.startButton.contains(e.target)) {
                 this.toggleStartMenu(false);
             }
+             if (!e.target.closest('.desktop-icon')) {
+                this.clearIconSelection();
+            }
         });
+    }
+
+    initDesktopInteraction() {
+        let selectionBox = null;
+        let startX, startY;
+
+        this.desktop.addEventListener('mousedown', (e) => {
+            if (e.target !== this.desktop && e.target !== this.desktopIconsContainer) return;
+            
+            this.clearIconSelection();
+            startX = e.clientX;
+            startY = e.clientY;
+
+            selectionBox = document.createElement('div');
+            selectionBox.id = 'selection-box';
+            this.desktop.appendChild(selectionBox);
+            
+            selectionBox.style.left = `${startX}px`;
+            selectionBox.style.top = `${startY}px`;
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
+        const onMouseMove = (e) => {
+            let x = e.clientX;
+            let y = e.clientY;
+
+            let left = Math.min(x, startX);
+            let top = Math.min(y, startY);
+            let width = Math.abs(x - startX);
+            let height = Math.abs(y - startY);
+
+            selectionBox.style.left = `${left}px`;
+            selectionBox.style.top = `${top}px`;
+            selectionBox.style.width = `${width}px`;
+            selectionBox.style.height = `${height}px`;
+            
+            this.checkSelection(selectionBox);
+        };
+
+        const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            if (selectionBox) {
+                selectionBox.remove();
+                selectionBox = null;
+            }
+        };
+    }
+
+    checkSelection(box) {
+        const boxRect = box.getBoundingClientRect();
+        document.querySelectorAll('.desktop-icon').forEach(icon => {
+            const iconRect = icon.getBoundingClientRect();
+            const isIntersecting = !(
+                boxRect.right < iconRect.left || 
+                boxRect.left > iconRect.right || 
+                boxRect.bottom < iconRect.top || 
+                boxRect.top > iconRect.bottom
+            );
+            icon.classList.toggle('selected', isIntersecting);
+        });
+    }
+    
+    clearIconSelection() {
+        document.querySelectorAll('.desktop-icon.selected').forEach(icon => icon.classList.remove('selected'));
     }
 
     hideContextMenus() {
@@ -159,7 +232,7 @@ class WindowManager {
         switch(action) {
             case 'change-wallpaper': this.createWindow('settings'); break;
             case 'new-folder': this.createNewDesktopIcon('folder', { x: parseInt(this.desktopContextMenu.style.left), y: parseInt(this.desktopContextMenu.style.top) }); break;
-            case 'refresh': document.body.style.opacity = 0.9; setTimeout(() => document.body.style.opacity = 1, 100); break;
+            case 'refresh': this.loadDesktop(); this.showNotification('Desktop refreshed', 'info'); break;
         }
     }
 
@@ -228,10 +301,7 @@ class WindowManager {
         };
         const notification = document.createElement('div');
         notification.className = 'notification';
-        notification.innerHTML = `
-            <i class="icon ${iconMap[type]}"></i>
-            <span>${message}</span>
-        `;
+        notification.innerHTML = `<i class="icon ${iconMap[type]}"></i><span>${message}</span>`;
         this.notificationContainer.appendChild(notification);
         setTimeout(() => {
             notification.classList.add('fade-out');
@@ -265,6 +335,14 @@ class WindowManager {
         const titleBar = this.createTitleBar(appId, appConfig.title, windowId);
         const content = document.createElement('div'); content.className = 'window-content'; content.innerHTML = appConfig.content;
 
+        if (appConfig.saveId) {
+            const savedContent = localStorage.getItem(appConfig.saveId);
+            if (savedContent) {
+                const textarea = content.querySelector('textarea');
+                if (textarea) textarea.value = savedContent;
+            }
+        }
+
         const resizeHandles = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'];
         resizeHandles.forEach(dir => { const handle = document.createElement('div'); handle.className = `resize-handle ${dir}`; windowEl.appendChild(handle); });
         
@@ -279,7 +357,7 @@ class WindowManager {
         if (appId === 'calculator') this.attachCalculatorLogic(windowEl);
         if (appId === 'settings') this.attachSettingsLogic(windowEl);
         if (appId === 'file-explorer') this.attachFileExplorerLogic(windowEl);
-
+        if (appId === 'notepad') this.attachNotepadLogic(windowEl);
 
         this.updateTaskbar();
         if (!state.minimized) this.focusWindow(windowId);
@@ -325,7 +403,7 @@ class WindowManager {
     toggleMaximize(windowId) {
         const { element, state } = this.windows.get(windowId);
         if (!element) return;
-        const taskbarHeight = document.querySelector('.taskbar').offsetHeight;
+        const taskbarHeight = this.taskbarEl.offsetHeight;
         const isMaximized = element.classList.toggle('maximized');
         if (isMaximized) {
             state.preMaximizeState = { left: element.style.left, top: element.style.top, width: element.style.width, height: element.style.height };
@@ -367,15 +445,60 @@ class WindowManager {
     }
 
     makeDraggable(element) {
-        let p1=0, p2=0, p3=0, p4=0; const titleBar = element.querySelector('.title-bar');
-        const drag = (e) => {
+        let initialX, initialY, currentX, currentY;
+        const titleBar = element.querySelector('.title-bar');
+        const snapThreshold = 20;
+
+        const dragMouseDown = (e) => {
             if (e.target.tagName === 'BUTTON' || element.classList.contains('maximized')) return;
-            e.preventDefault(); p3=e.clientX; p4=e.clientY; this.focusWindow(element.id);
-            document.onmouseup=stop; document.onmousemove=move;
+            e.preventDefault();
+            
+            currentX = parseInt(element.style.left) || 0;
+            currentY = parseInt(element.style.top) || 0;
+            
+            initialX = e.clientX;
+            initialY = e.clientY;
+            
+            this.focusWindow(element.id);
+            document.addEventListener('mousemove', elementDrag);
+            document.addEventListener('mouseup', stopDragElement);
         };
-        const move = (e) => { e.preventDefault(); p1=p3-e.clientX; p2=p4-e.clientY; p3=e.clientX; p4=e.clientY; element.style.top=`${element.offsetTop-p2}px`; element.style.left=`${element.offsetLeft-p1}px`; };
-        const stop = () => { document.onmouseup=null; document.onmousemove=null; };
-        if (titleBar) titleBar.onmousedown = drag;
+
+        const elementDrag = (e) => {
+            e.preventDefault();
+            
+            let dx = e.clientX - initialX;
+            let dy = e.clientY - initialY;
+            
+            let newLeft = currentX + dx;
+            let newTop = currentY + dy;
+            
+            element.style.transform = `translate3d(${newLeft}px, ${newTop}px, 0)`;
+        };
+
+        const stopDragElement = (e) => {
+            document.removeEventListener('mousemove', elementDrag);
+            document.removeEventListener('mouseup', stopDragElement);
+
+            let finalLeft = element.offsetLeft;
+            let finalTop = element.offsetTop;
+            
+            const transformMatrix = new WebKitCSSMatrix(element.style.transform);
+            finalLeft = transformMatrix.m41;
+            finalTop = transformMatrix.m42;
+
+            const taskbarHeight = this.taskbarEl.offsetHeight;
+
+            if (Math.abs(finalTop) < snapThreshold) finalTop = 0;
+            if (Math.abs(finalLeft) < snapThreshold) finalLeft = 0;
+            if (Math.abs(finalLeft + element.offsetWidth - window.innerWidth) < snapThreshold) finalLeft = window.innerWidth - element.offsetWidth;
+            if (Math.abs(finalTop + element.offsetHeight - (window.innerHeight - taskbarHeight)) < snapThreshold) finalTop = window.innerHeight - taskbarHeight - element.offsetHeight;
+            
+            element.style.transform = '';
+            element.style.left = `${finalLeft}px`;
+            element.style.top = `${finalTop}px`;
+        };
+        if (titleBar) titleBar.onmousedown = dragMouseDown;
     }
 
     makeResizable(element) {
@@ -397,6 +520,21 @@ class WindowManager {
             });
         });
     }
+    
+    attachNotepadLogic(windowEl) {
+        const textarea = windowEl.querySelector('textarea');
+        const saveId = this.appRegistry.notepad.saveId;
+        if (!textarea || !saveId) return;
+
+        let debounceTimeout;
+        const debouncedSave = () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => {
+                localStorage.setItem(saveId, textarea.value);
+            }, 500);
+        };
+        textarea.addEventListener('keyup', debouncedSave);
+    }
 
     attachCalculatorLogic(el) {
         const d=el.querySelector('.calc-display'), b=el.querySelector('.calc-buttons'); let i='0';
@@ -412,11 +550,26 @@ class WindowManager {
     attachSettingsLogic(el) {
         const i=el.querySelector('#wallpaper-input'), b=el.querySelector('#wallpaper-button');
         const notifBtn = el.querySelector('#notification-button');
+        const themeSwitcher = el.querySelector('.theme-switcher');
+        const clearDataBtn = el.querySelector('#clear-data-button');
+        
         i.value = localStorage.getItem('desktopWallpaper') || '';
         b.addEventListener('click', () => { this.changeWallpaper(i.value); });
         notifBtn.addEventListener('click', () => this.showNotification('This is a test notification!', 'info'));
+        
+        themeSwitcher.addEventListener('click', (e) => {
+            if (e.target.dataset.theme) this.setTheme(e.target.dataset.theme);
+        });
+        
+        if (clearDataBtn) {
+            clearDataBtn.addEventListener('click', () => {
+                localStorage.clear();
+                this.showNotification('All data has been reset. Reloading...', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            });
+        }
     }
-
+    
     attachFileExplorerLogic(windowEl) {
         const container = windowEl.querySelector('.file-explorer-app');
         container.innerHTML = '';
@@ -427,11 +580,25 @@ class WindowManager {
             const itemEl = document.createElement('div');
             itemEl.className = 'file-item';
             itemEl.innerHTML = `${appConfig.icon}<span>${itemData.title}</span>`;
-            itemEl.addEventListener('dblclick', () => {
-                this.createWindow(itemData.appId);
-            });
+            itemEl.addEventListener('dblclick', () => { this.createWindow(itemData.appId); });
             container.appendChild(itemEl);
         }
+    }
+    
+    setTheme(theme) {
+        document.body.className = `theme-${theme}`;
+        localStorage.setItem('theme', theme);
+        const settingsWindow = Array.from(this.windows.values()).find(w => w.element.dataset.appId === 'settings');
+        if (settingsWindow) {
+            const themeSwitcher = settingsWindow.element.querySelector('.theme-switcher');
+            themeSwitcher.querySelector('.active')?.classList.remove('active');
+            themeSwitcher.querySelector(`[data-theme="${theme}"]`).classList.add('active');
+        }
+    }
+
+    loadTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        this.setTheme(savedTheme);
     }
     
     changeWallpaper(url) { if (url) { this.desktop.style.backgroundImage = `url('${url}')`; localStorage.setItem('desktopWallpaper', url); } }
@@ -440,9 +607,8 @@ class WindowManager {
     // File System and Desktop Icon Management
     initFileSystem() {
         const savedFS = localStorage.getItem('fileSystem');
-        if (savedFS) {
-            this.fileSystem = JSON.parse(savedFS);
-        } else {
+        if (savedFS) { this.fileSystem = JSON.parse(savedFS); } 
+        else {
             this.fileSystem = {
                 'desktop': {
                     'icon-notepad': { appId: 'notepad', title: 'Notepad', top: 32, left: 32 },
@@ -489,32 +655,71 @@ class WindowManager {
     }
 
     makeIconDraggable(element) {
-        let p1=0, p2=0, p3=0, p4=0;
-        const drag = (e) => {
+        let initialX, initialY, startPositions = new Map();
+        
+        const dragMouseDown = (e) => {
             if (e.button !== 0 || e.target.tagName === 'INPUT') return;
-            e.preventDefault(); p3=e.clientX; p4=e.clientY;
-            element.classList.add('dragging');
-            document.onmouseup=stop; document.onmousemove=move;
+            e.preventDefault();
+
+            const selectedIcons = document.querySelectorAll('.desktop-icon.selected');
+            const isMultiDrag = selectedIcons.length > 1 && element.classList.contains('selected');
+            const targets = isMultiDrag ? Array.from(selectedIcons) : [element];
+
+            initialX = e.clientX;
+            initialY = e.clientY;
+            
+            targets.forEach(icon => {
+                icon.classList.add('dragging');
+                startPositions.set(icon, { x: icon.offsetLeft, y: icon.offsetTop });
+            });
+
+            document.addEventListener('mousemove', elementDrag);
+            document.addEventListener('mouseup', stopDragElement);
+
+            function elementDrag(e) {
+                e.preventDefault();
+                let dx = e.clientX - initialX;
+                let dy = e.clientY - initialY;
+                
+                targets.forEach(icon => {
+                    const startPos = startPositions.get(icon);
+                    icon.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+                });
+            }
+
+            function stopDragElement(e) {
+                document.removeEventListener('mousemove', elementDrag);
+                document.removeEventListener('mouseup', stopDragElement);
+
+                targets.forEach(icon => {
+                    const startPos = startPositions.get(icon);
+                    let dx = e.clientX - initialX;
+                    let dy = e.clientY - initialY;
+                    
+                    const newLeft = startPos.x + dx;
+                    const newTop = startPos.y + dy;
+
+                    icon.style.transform = '';
+                    icon.style.left = `${newLeft}px`;
+                    icon.style.top = `${newTop}px`;
+                    
+                    if (this.fileSystem.desktop[icon.id]) {
+                        this.fileSystem.desktop[icon.id].left = newLeft;
+                        this.fileSystem.desktop[icon.id].top = newTop;
+                    }
+                    icon.classList.remove('dragging');
+                });
+                
+                this.saveFileSystem();
+                startPositions.clear();
+            }
         };
-        const move = (e) => {
-            e.preventDefault(); p1=p3-e.clientX; p2=p4-e.clientY; p3=e.clientX; p4=e.clientY;
-            element.style.top=`${element.offsetTop-p2}px`; element.style.left=`${element.offsetLeft-p1}px`;
-        };
-        const stop = () => {
-            element.classList.remove('dragging');
-            document.onmouseup=null; document.onmousemove=null;
-            this.fileSystem.desktop[element.id].left = parseInt(element.style.left);
-            this.fileSystem.desktop[element.id].top = parseInt(element.style.top);
-            this.saveFileSystem();
-        };
-        element.onmousedown = drag;
+
+        element.onmousedown = dragMouseDown.bind(this);
     }
 
     // State Persistence
-    saveFileSystem() {
-        localStorage.setItem('fileSystem', JSON.stringify(this.fileSystem));
-    }
-
+    saveFileSystem() { localStorage.setItem('fileSystem', JSON.stringify(this.fileSystem)); }
     saveWindowState() {
         const data = [];
         this.windows.forEach(({ element, state }, id) => {
@@ -525,7 +730,6 @@ class WindowManager {
         });
         localStorage.setItem('windowManager', JSON.stringify(data));
     }
-
     loadWindowState() {
         const saved = localStorage.getItem('windowManager');
         if (saved) {
